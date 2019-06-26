@@ -12,6 +12,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,10 +24,13 @@ public class CrimeListFragment extends Fragment {
 
     private CrimeListAdapter mCrimeListAdapter;
 
+    private boolean mSubtitleFlag = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Nullable
@@ -45,13 +49,15 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mCrimeListAdapter.notifyDataSetChanged();
+
+        //mCrimeListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_crime_list, menu);
+        //updateToolbar(menu);
     }
 
     @Override
@@ -62,11 +68,43 @@ public class CrimeListFragment extends Fragment {
                 mCrimes.add(crime);
                 getActivity().startActivity(CrimePagerActivity.newCrimeActivityIntent(getActivity(),crime.getId()));
                 return true;
+            case R.id.show_subtitle :
+                mSubtitleFlag = !mSubtitleFlag;
+                getActivity().invalidateOptionsMenu();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        updateToolbar(menu);
+    }
+
     public static Fragment newFragment(){
         return new CrimeListFragment();
+    }
+
+    private void setSubtitle(){
+        String subtitle = mSubtitleFlag ? getString(R.string.subtitle_format,CrimeLab.getInstance().getCrimeList().size()) : null;
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(subtitle);
+    }
+
+    private void updateToolbar(Menu menu){
+        if(mSubtitleFlag){
+            setSubtitle();
+            menu.findItem(R.id.show_subtitle).setTitle(R.string.hide_subtitle);
+        }
+        else{
+            setSubtitle();
+            menu.findItem(R.id.show_subtitle).setTitle(R.string.show_subtitle);
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

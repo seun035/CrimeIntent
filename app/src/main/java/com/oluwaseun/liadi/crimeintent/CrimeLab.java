@@ -17,14 +17,6 @@ class CrimeLab {
 
     private CrimeLab() {
         mCrimeList = new ArrayList<>();
-        for (int i = 0 ; i < 100 ; ++i){
-            Crime crime = new Crime();
-            crime.setTitle("Crime #"+i);
-            if (i%2 == 0){
-                crime.setSolved(true);
-            }
-            mCrimeList.add(crime);
-        }
     }
 
     public List<Crime> getCrimeList() {
