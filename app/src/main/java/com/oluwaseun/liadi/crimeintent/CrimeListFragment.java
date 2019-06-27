@@ -50,14 +50,13 @@ public class CrimeListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        //mCrimeListAdapter.notifyDataSetChanged();
+        mCrimeListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_crime_list, menu);
-        //updateToolbar(menu);
     }
 
     @Override
