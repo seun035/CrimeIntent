@@ -1,5 +1,10 @@
 package com.oluwaseun.liadi.crimeintent;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.oluwaseun.liadi.crimeintent.database.CrimeBaseHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -8,14 +13,19 @@ class CrimeLab {
     private static CrimeLab ourInstance;
 
     private List<Crime> mCrimeList;
-    static CrimeLab getInstance() {
+    private Context mContext;
+
+    private SQLiteDatabase db;
+    static CrimeLab getInstance(Context context) {
         if (ourInstance == null){
-           ourInstance = new CrimeLab();
+           ourInstance = new CrimeLab(context);
         }
         return ourInstance;
     }
 
-    private CrimeLab() {
+    private CrimeLab(Context context) {
+        mContext = context.getApplicationContext();
+        db = new CrimeBaseHelper(mContext).getWritableDatabase();
         mCrimeList = new ArrayList<>();
     }
 
