@@ -28,17 +28,17 @@ public class CrimePagerActivity extends AppCompatActivity {
         mCrimeViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
             @Override
             public Fragment getItem(int position) {
-                UUID crimeId = CrimeLab.getInstance().getCrimeList().get(position).getId();
+                UUID crimeId = CrimeLab.getInstance(CrimePagerActivity.this).getCrimeList().get(position).getId();
                 Fragment fragment = CrimeFragment.newFragment(crimeId);
                 return fragment;
             }
 
             @Override
             public int getCount() {
-                return CrimeLab.getInstance().getCrimeList().size();
+                return CrimeLab.getInstance(CrimePagerActivity.this).getCrimeList().size();
             }
         });
-        mCrimeViewPager.setCurrentItem(CrimeLab.getInstance().getCrimePostion(mCrimeId));
+        mCrimeViewPager.setCurrentItem(CrimeLab.getInstance(this).getCrimePostion(mCrimeId));
 
 //        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 //        if (  fragment == null ){

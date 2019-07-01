@@ -38,7 +38,7 @@ public class CrimeListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime_list, container, false);
         mCrimeListRecyclerView = v.findViewById(R.id.crime_list_recycle);
-        mCrimes = CrimeLab.getInstance().getCrimeList();
+        mCrimes = CrimeLab.getInstance(getActivity()).getCrimeList();
         mCrimeListAdapter = new CrimeListAdapter(getActivity() , mCrimes);
         mCrimeListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCrimeListRecyclerView.setAdapter( mCrimeListAdapter);
@@ -86,7 +86,7 @@ public class CrimeListFragment extends Fragment {
     }
 
     private void setSubtitle(){
-        String subtitle = mSubtitleFlag ? getString(R.string.subtitle_format,CrimeLab.getInstance().getCrimeList().size()) : null;
+        String subtitle = mSubtitleFlag ? getString(R.string.subtitle_format,CrimeLab.getInstance(getActivity()).getCrimeList().size()) : null;
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(subtitle);
     }
 

@@ -40,7 +40,7 @@ public class CrimeFragment extends Fragment {
         // mCrime = new Crime();
         UUID crimeId = (UUID)getArguments().getSerializable(CRIME_ID);
         if ( crimeId != null){
-            mCrime = CrimeLab.getInstance().getCrime(crimeId);
+            mCrime = CrimeLab.getInstance(getActivity()).getCrime(crimeId);
         }
     }
 
