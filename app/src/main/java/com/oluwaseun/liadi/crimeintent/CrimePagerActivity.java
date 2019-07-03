@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.util.List;
 import java.util.UUID;
 
 public class CrimePagerActivity extends AppCompatActivity {
@@ -17,34 +18,31 @@ public class CrimePagerActivity extends AppCompatActivity {
     public static final String CRIME_ID_EXTRA = "com.oluwaseun.liadi.crimeintent.crime.position.extra";
     private UUID mCrimeId;
     private ViewPager mCrimeViewPager;
+    private List<Crime> mCrimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_pager);
         mCrimeViewPager = findViewById(R.id.crime_view_pager);
+        mCrimes = CrimeLab.getInstance(this).getCrimes();
         setCrimePosition();
         FragmentManager fm = getSupportFragmentManager();
         mCrimeViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
             @Override
             public Fragment getItem(int position) {
-                UUID crimeId = CrimeLab.getInstance(CrimePagerActivity.this).getCrimeList().get(position).getId();
+                UUID crimeId = mCrimes.get(position).getId();
                 Fragment fragment = CrimeFragment.newFragment(crimeId);
                 return fragment;
             }
 
             @Override
             public int getCount() {
-                return CrimeLab.getInstance(CrimePagerActivity.this).getCrimeList().size();
+                return mCrimes.size();
             }
         });
-        mCrimeViewPager.setCurrentItem(CrimeLab.getInstance(this).getCrimePostion(mCrimeId));
+        mCrimeViewPager.setCurrentItem(getCrimePostion(mCrimeId));
 
-//        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-//        if (  fragment == null ){
-//            fragment = CrimeFragment.newFragment(mCrimeId);
-//            fm.beginTransaction().add(R.id.fragment_container,fragment).commit();
-//        }
     }
 
     public void setCrimePosition(){
@@ -55,5 +53,14 @@ public class CrimePagerActivity extends AppCompatActivity {
         Intent intent = new Intent(context , CrimePagerActivity.class);
         intent.putExtra(CRIME_ID_EXTRA, crimeId);
         return intent;
+    }
+
+    private int getCrimePostion(UUID id){
+        for (int i = 0 ; i < mCrimes.size() ; ++i){
+            if (mCrimes.get(i).getId().equals(id)){
+                return  i;
+            }
+        }
+        return 0;
     }
 }
