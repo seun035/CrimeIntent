@@ -19,91 +19,95 @@ class CrimeLab {
 
     private Context mContext;
 
-    private SQLiteDatabase db;
     static CrimeLab getInstance(Context context) {
-        if (ourInstance == null){
-           ourInstance = new CrimeLab(context);
+        if (ourInstance == null) {
+            ourInstance = new CrimeLab(context);
         }
         return ourInstance;
     }
 
     private CrimeLab(Context context) {
         mContext = context.getApplicationContext();
-        db = new CrimeBaseHelper(mContext).getWritableDatabase();
     }
 
-    public Crime getCrime(UUID id){
+    public Crime getCrime(UUID id) {
 
-       Cursor cursor = db.query(CrimeTable.NAME,null, CrimeTable.Cols.UUID +" =?",
-               new String[]{id.toString()},null,null,null);
+        SQLiteDatabase db = new CrimeBaseHelper(mContext).getWritableDatabase();
+        Cursor cursor = db.query(CrimeTable.NAME, null, CrimeTable.Cols.UUID + " =?",
+                new String[]{id.toString()}, null, null, null);
 
-       int uuidIndex = cursor.getColumnIndex(CrimeTable.Cols.UUID);
-       int titleIndex = cursor.getColumnIndex(CrimeTable.Cols.TITLE);
-       int dateIndex = cursor.getColumnIndex(CrimeTable.Cols.DATE);
-       int solvedIndex = cursor.getColumnIndex(CrimeTable.Cols.SOLVED);
-       try {
-           if (cursor.getCount() == 0){
-               return  null;
-           }
-           cursor.moveToFirst();
-           Crime crime = new Crime(UUID.fromString(cursor.getString(uuidIndex)));
-           crime.setDate(new Date(cursor.getLong(dateIndex)));
-           crime.setTitle(cursor.getString(titleIndex));
-           crime.setSolved(cursor.getInt(solvedIndex) == 1 ? true : false );
-           return crime;
-       }finally {
-           db.close();
-       }
-
-    }
-
-    public List<Crime> getCrimes(){
-        Cursor cursor = db.query(CrimeTable.NAME,null,null,null,null,null,null);
         int uuidIndex = cursor.getColumnIndex(CrimeTable.Cols.UUID);
         int titleIndex = cursor.getColumnIndex(CrimeTable.Cols.TITLE);
         int dateIndex = cursor.getColumnIndex(CrimeTable.Cols.DATE);
         int solvedIndex = cursor.getColumnIndex(CrimeTable.Cols.SOLVED);
-
-        try{
-
-            if (cursor.getCount() == 0){
-                return new ArrayList<>();
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
             }
-            List<Crime> crimes = new ArrayList<>();
-            boolean index = cursor.moveToFirst();
-            while (index){
-                Crime crime = new Crime(UUID.fromString(cursor.getString(uuidIndex)));
-                crime.setDate(new Date(cursor.getLong(dateIndex)));
-                crime.setTitle(cursor.getString(titleIndex));
-                crime.setSolved(cursor.getInt(solvedIndex) == 1 ? true : false );
-                crimes.add(crime);
-                index = cursor.moveToNext();
-            }
-            return crimes;
-        }finally {
+            cursor.moveToFirst();
+            Crime crime = new Crime(UUID.fromString(cursor.getString(uuidIndex)));
+            crime.setDate(new Date(cursor.getLong(dateIndex)));
+            crime.setTitle(cursor.getString(titleIndex));
+            crime.setSolved(cursor.getInt(solvedIndex) == 1 ? true : false);
+            return crime;
+        } finally {
             db.close();
         }
 
     }
 
-    public void addCrime(Crime crime){
+    public List<Crime> getCrimes() {
+        SQLiteDatabase db = new CrimeBaseHelper(mContext).getWritableDatabase();
+        Cursor cursor = db.query(CrimeTable.NAME, null, null, null, null, null, null);
+        int uuidIndex = cursor.getColumnIndex(CrimeTable.Cols.UUID);
+        int titleIndex = cursor.getColumnIndex(CrimeTable.Cols.TITLE);
+        int dateIndex = cursor.getColumnIndex(CrimeTable.Cols.DATE);
+        int solvedIndex = cursor.getColumnIndex(CrimeTable.Cols.SOLVED);
+
+        try {
+
+            if (cursor.getCount() == 0) {
+                return new ArrayList<>();
+            }
+            List<Crime> crimes = new ArrayList<>();
+            boolean index = cursor.moveToFirst();
+            while (index) {
+                Crime crime = new Crime(UUID.fromString(cursor.getString(uuidIndex)));
+                crime.setDate(new Date(cursor.getLong(dateIndex)));
+                crime.setTitle(cursor.getString(titleIndex));
+                crime.setSolved(cursor.getInt(solvedIndex) == 1 ? true : false);
+                crimes.add(crime);
+                index = cursor.moveToNext();
+            }
+            return crimes;
+        } finally {
+            db.close();
+        }
+
+    }
+
+    public void addCrime(Crime crime) {
+        SQLiteDatabase db = new CrimeBaseHelper(mContext).getWritableDatabase();
         ContentValues values = createContentValues(crime);
-        db.insert(CrimeTable.NAME,null,values);
+        db.insert(CrimeTable.NAME, null, values);
+        db.close();
     }
 
     public void updateCrime(Crime crime) {
+        SQLiteDatabase db = new CrimeBaseHelper(mContext).getWritableDatabase();
         ContentValues values = createContentValues(crime);
         db.update(CrimeTable.NAME, values, CrimeTable.Cols.UUID + "= ?", new String[]{crime.getId().toString()});
+        db.close();
     }
 
 
-    private ContentValues createContentValues(Crime crime){
+    private ContentValues createContentValues(Crime crime) {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(CrimeTable.Cols.UUID,crime.getId().toString());
-        contentValues.put(CrimeTable.Cols.TITLE,crime.getTitle());
-        contentValues.put(CrimeTable.Cols.DATE,crime.getDate().getTime());
-        contentValues.put(CrimeTable.Cols.SOLVED,crime.isSolved() ? 1 : 0);
+        contentValues.put(CrimeTable.Cols.UUID, crime.getId().toString());
+        contentValues.put(CrimeTable.Cols.TITLE, crime.getTitle());
+        contentValues.put(CrimeTable.Cols.DATE, crime.getDate().getTime());
+        contentValues.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
         return contentValues;
     }
 }

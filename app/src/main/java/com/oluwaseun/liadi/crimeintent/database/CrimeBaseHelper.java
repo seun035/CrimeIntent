@@ -9,8 +9,7 @@ import androidx.annotation.Nullable;
 import static com.oluwaseun.liadi.crimeintent.database.CrimeDbSchema.*;
 
 public class CrimeBaseHelper extends SQLiteOpenHelper {
-    private Context mContext;
-    //private int version = 1;
+
     public static final int VERSION = 1;
     private static final String DATABASE_NAME = "crime.db";
     public CrimeBaseHelper(@Nullable Context context) {
