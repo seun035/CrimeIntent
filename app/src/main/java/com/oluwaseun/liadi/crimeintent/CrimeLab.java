@@ -40,6 +40,8 @@ class CrimeLab {
         int titleIndex = cursor.getColumnIndex(CrimeTable.Cols.TITLE);
         int dateIndex = cursor.getColumnIndex(CrimeTable.Cols.DATE);
         int solvedIndex = cursor.getColumnIndex(CrimeTable.Cols.SOLVED);
+        int suspectIndex = cursor.getColumnIndex(CrimeTable.Cols.SUSPECT);
+
         try {
             if (cursor.getCount() == 0) {
                 return null;
@@ -49,6 +51,8 @@ class CrimeLab {
             crime.setDate(new Date(cursor.getLong(dateIndex)));
             crime.setTitle(cursor.getString(titleIndex));
             crime.setSolved(cursor.getInt(solvedIndex) == 1 ? true : false);
+            crime.setSuspect(cursor.getString(suspectIndex));
+
             return crime;
         } finally {
             db.close();
@@ -63,6 +67,7 @@ class CrimeLab {
         int titleIndex = cursor.getColumnIndex(CrimeTable.Cols.TITLE);
         int dateIndex = cursor.getColumnIndex(CrimeTable.Cols.DATE);
         int solvedIndex = cursor.getColumnIndex(CrimeTable.Cols.SOLVED);
+        int suspectIndex = cursor.getColumnIndex(CrimeTable.Cols.SUSPECT);
 
         try {
 
@@ -76,6 +81,7 @@ class CrimeLab {
                 crime.setDate(new Date(cursor.getLong(dateIndex)));
                 crime.setTitle(cursor.getString(titleIndex));
                 crime.setSolved(cursor.getInt(solvedIndex) == 1 ? true : false);
+                crime.setSuspect(cursor.getString(suspectIndex));
                 crimes.add(crime);
                 index = cursor.moveToNext();
             }
@@ -108,6 +114,7 @@ class CrimeLab {
         contentValues.put(CrimeTable.Cols.TITLE, crime.getTitle());
         contentValues.put(CrimeTable.Cols.DATE, crime.getDate().getTime());
         contentValues.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
+        contentValues.put(CrimeTable.Cols.SUSPECT, crime.getSuspect());
         return contentValues;
     }
 }

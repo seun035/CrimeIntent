@@ -49,10 +49,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:fontFamily="casual"
         android:text="Button"
         app:layout_constraintEnd_toEndOf="@+id/textView3"
         app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <CheckBox
         android:id="@+id/crime_solved"
@@ -64,4 +65,15 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/crime_date"
         app:layout_constraintTop_toBottomOf="@+id/crime_date"/>
+
+    <Button
+        android:id="@+id/suspect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/crime_suspect_text"
+        app:layout_constraintEnd_toEndOf="@+id/crime_date"
+        app:layout_constraintStart_toStartOf="@+id/crime_solved"
+        app:layout_constraintTop_toBottomOf="@+id/crime_solved" />
 </androidx.constraintlayout.widget.ConstraintLayout>
