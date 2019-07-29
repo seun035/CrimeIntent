@@ -1,7 +1,11 @@
 package com.oluwaseun.liadi.crimeintent;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,8 +34,10 @@ public class CrimeFragment extends Fragment {
     private EditText mTitleEditText;
     private CheckBox mSolvedCheckBox;
     private Button mSendReportButton;
+    private Button mChooseSuspectButton;
     public static final String CRIME_ID = "com.oluwaseun.liadi.crimeintent.crime.id";
     public static final int REQUEST_CODE = 10;
+    public static final int CONTACT_REQUEST_CODE = 20;
     private static final String TAG = "CrimeFragment";
 
     private Crime mCrime;
@@ -56,6 +62,7 @@ public class CrimeFragment extends Fragment {
         mTitleEditText = v.findViewById(R.id.crime_title);
         mSolvedCheckBox = v.findViewById(R.id.crime_solved);
         mSendReportButton = v.findViewById(R.id.send_report);
+        mChooseSuspectButton = v.findViewById(R.id.choose_suspect);
 
         mTitleEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,8 +108,16 @@ public class CrimeFragment extends Fragment {
                 Intent emailReport = new Intent(Intent.ACTION_SEND);
                 emailReport.putExtra(Intent.EXTRA_SUBJECT , getString(R.string.crime_report_subject));
                 emailReport.putExtra(Intent.EXTRA_TEXT, generateReport());
-                emailReport.setType("message/rfc822");
-                getActivity().startActivity(emailReport);
+                emailReport.setType("text/plain");
+                getActivity().startActivity(Intent.createChooser(emailReport,getString(R.string.send_report)));
+            }
+        });
+
+        mChooseSuspectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent chooseSuspectIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(chooseSuspectIntent,CONTACT_REQUEST_CODE);
             }
         });
 
@@ -118,6 +133,21 @@ public class CrimeFragment extends Fragment {
                 Log.d(TAG, "onActivityResult: "+date);
                 mCrime.setDate(date);
                 mDateButton.setText(mCrime.getDate().toString());
+            }
+            else if(CONTACT_REQUEST_CODE == requestCode){
+                Uri uri = data.getData();
+                Cursor c = getActivity().getContentResolver().query(uri,new String[] {ContactsContract.Contacts.DISPLAY_NAME},null,null,null);
+                try {
+                    if (c.getCount() == 0){
+                        return;
+                    }
+                    c.moveToFirst();
+                    String suspect = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    mCrime.setSuspect(suspect);
+                    mChooseSuspectButton.setText(suspect);
+                }finally {
+
+                }
             }
         }
     }
